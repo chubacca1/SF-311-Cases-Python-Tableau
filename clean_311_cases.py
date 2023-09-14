@@ -10,7 +10,8 @@ import pandas as pd
 import os
 
 
-# Global
+# Globals
+
 MONTHS = {
     1: 'January',
     2: 'February',
@@ -25,6 +26,38 @@ MONTHS = {
     11: 'November',
     12: 'December'
 }
+
+# The large 2.8gb CSV file of non emergency cases made to 311 from data.sfgov.org
+LARGE_CSV = '311_cases.csv'
+
+# The new folder name to store the chunked CSV files
+SPLIT_CSV_DIR = '311_cases_year'
+
+# The new smaller CSV file
+COMBINED_CSV = '311_cases_subset.csv'
+
+# The years of interest from when Covid began to the end of 2022
+YEARS_TO_COMBINE = [2020, 2021, 2022]
+
+# Original CSV file contained lots of unnecessary columns
+# Only keep what may be needed for now and can do further cleaning later
+COLUMNS_TO_KEEP = [
+    'CaseID',
+    'Opened',
+    'Closed',
+    'Updated',
+    'Status',
+    'Status Notes',
+    'Responsible Agency',
+    'Category',
+    'Request Type',
+    'Request Details',
+    'Neighborhood',
+    'Latitude',
+    'Longitude',
+    'Point',
+    'Source'
+]
 
 
 def split_csv_by_year(input_csv, output_dir):
@@ -138,40 +171,11 @@ def clean_csv_for_visualization(combined_csv_file):
 
 
 if __name__ == "__main__":
-    # The large 2.8gb CSV file of non emergency cases made to 311 from data.sfgov.org
-    large_csv_file = '311_cases.csv'
-    
-    # The new folder name to store the chunked CSV files
-    split_csv_directory = '311_cases_year'
-    
-    # The new smaller CSV file
-    combined_csv_file = '311_cases_subset.csv'
-    
-    # The years of interest from when Covid began to the end of 2022
-    years_to_combine = [2020, 2021, 2022]
-    
-    # Original CSV file contained lots of unnecessary columns
-    # Only keep what may be needed for now and can do further cleaning later
-    columns_to_keep = [
-        'CaseID',
-        'Opened',
-        'Closed',
-        'Updated',
-        'Status',
-        'Status Notes',
-        'Responsible Agency',
-        'Category',
-        'Request Type',
-        'Request Details',
-        'Neighborhood',
-        'Source'
-    ]
-    
     # Call function to split the large CSV file by year
-    split_csv_by_year(large_csv_file, split_csv_directory)
+    split_csv_by_year(LARGE_CSV, SPLIT_CSV_DIR)
     
     # Combine the CSV files by year
-    combine_csv_by_years(split_csv_directory, combined_csv_file, years_to_combine, columns_to_keep)
+    combine_csv_by_years(SPLIT_CSV_DIR, COMBINED_CSV, YEARS_TO_COMBINE, COLUMNS_TO_KEEP)
     
     # Clean some of the data for visualization in Tableau
-    clean_csv_for_visualization(combined_csv_file)
+    clean_csv_for_visualization(COMBINED_CSV)
